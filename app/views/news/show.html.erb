@@ -1,0 +1,28 @@
+<h1><%= @news.title %></h1>
+<p><%= @news.content %></p>
+
+<h2>Comentarios</h2>
+<% @comments.each do |comment| %>
+  <p>
+    <strong><%= comment.user.email %>:</strong> <%= comment.content %>
+    <% if current_user&.admin? %>
+      <%= link_to 'Eliminar', [comment.news, comment], method: :delete, data: { confirm: '¿Estás seguro?' } %>
+    <% end %>
+  </p>
+<% end %>
+
+<% if user_signed_in? %>
+  <h3>Añadir un comentario</h3>
+  <%= form_with model: [ @news, Comment.new ], local: true do |form| %>
+    <div class="field">
+      <%= form.label :content %>
+      <%= form.text_area :content %>
+    </div>
+    <div class="actions">
+      <%= form.submit 'Añadir comentario' %>
+    </div>
+  <% end %>
+<% else %>
+  <p><%= link_to 'Inicia sesión' %> para dejar un comentario.</p>
+<% end %>
+
